@@ -6,9 +6,11 @@ namespace AbstractionConfig
 {
     public static class ContentSupport
     {
+        public static string ContentRootPath;
+
         public static string GetContentRoot()
         {
-            return @"C:\GitHub\kallex\private\Demos\CQRS_CustomerBankAccountDemo\Abstractions\AbstractionContent\";
+            return ContentRootPath;
         }
 
         public static string GetAbstractionContentRoot(string abstractionName)

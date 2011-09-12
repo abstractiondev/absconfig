@@ -27,13 +27,15 @@ namespace AbstractionConfig
         {
             string sourceContentInputRoot = GetAbstractionContentRoot(sourceAbstractionName);
             string transContentInputRoot = GetTransContentInputRoot(transName);
-            string[] directoryNames = Directory.GetDirectories(sourceContentInputRoot, ContentFolderPrefixFilter + "*");
-            DirectoryInfo[] directories = directoryNames.Select(dirName => new DirectoryInfo(dirName)).ToArray();
+            //string[] directoryNames = Directory.GetDirectories(sourceContentInputRoot, ContentFolderPrefixFilter + "*");
+            //DirectoryInfo[] directories = directoryNames.Select(dirName => new DirectoryInfo(dirName)).ToArray();
+            DirectoryInfo sourceDir = new DirectoryInfo(sourceContentInputRoot);
             DirectoryInfo targetDir = new DirectoryInfo(transContentInputRoot);
-            foreach(var sourceDir in directories)
-            {
-                CopyDirectoryTree(sourceDir, targetDir);
-            }
+            CopyDirectoryTree(sourceDir, targetDir);
+            //foreach(var sourceDir in directories)
+            //{
+            //    CopyDirectoryTree(sourceDir, targetDir);
+            //}
         }
 
         private static string GetTransContentInputRoot(string transName)
@@ -52,8 +54,11 @@ namespace AbstractionConfig
 
         public static void CleanupDirectory(string directoryName)
         {
+            Contract.Requires(string.IsNullOrEmpty(ContentRootPath) == false);
+            Contract.Requires(directoryName.StartsWith(ContentRootPath));
             DirectoryInfo directoryInfo = new DirectoryInfo(directoryName);
-            directoryInfo.Delete();
+            if(directoryInfo.Exists)
+                directoryInfo.Delete(true);
             directoryInfo.Create();
         }
 

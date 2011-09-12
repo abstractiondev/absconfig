@@ -63,6 +63,12 @@ namespace AbstractionConfig
             CleanupDirectory(transContentOutputRoot);
         }
 
+        public static void CleanupAbstractionOutputDirectory(string abstractionName)
+        {
+            string outputDirectory = GetAbstractionOutputFolder(abstractionName);
+            CleanupDirectory(outputDirectory);
+        }
+
         public static void CleanupDirectory(string directoryName)
         {
             Contract.Requires(string.IsNullOrEmpty(ContentRootPath) == false);
@@ -114,6 +120,15 @@ namespace AbstractionConfig
             string abstractionInputRoot = GetAbstractionInputRoot(abstractionName);
             string[] fileNames = Directory.GetFiles(abstractionInputRoot, filefilter, SearchOption.AllDirectories);
             return fileNames;
+        }
+
+        public static void RemoveAllInputDirectoriesMatchingTransformationName(string targetAbstractionName, string transformationName)
+        {
+            string inputRoot = GetAbstractionInputRoot(targetAbstractionName);
+            DirectoryInfo inputDir = new DirectoryInfo(inputRoot);
+            DirectoryInfo[] transformationDirectories = inputDir.GetDirectories(transformationName,
+                                                                                SearchOption.AllDirectories);
+            Array.ForEach(transformationDirectories, dir => dir.Delete(true));
         }
     }
 }

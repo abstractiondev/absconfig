@@ -106,8 +106,10 @@ namespace AbstractionConfig
         {
             string transContentOutputRoot = GetTransContentOutputRoot(transName);
             string targetContentRootInputRoot = GetAbstractionInputRoot(targetAbstractionName);
+            string targetPath = Path.Combine(targetContentRootInputRoot, transName);
+            CleanupDirectory(targetPath);
             CopyDirectoryTree(new DirectoryInfo(transContentOutputRoot),
-                              new DirectoryInfo(targetContentRootInputRoot), transName, true);
+                              new DirectoryInfo(targetPath));
         }
 
         private static string GetTransContentOutputRoot(string transName)

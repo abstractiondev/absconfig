@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.Contracts;
+﻿using System;
+using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
 
@@ -19,13 +20,23 @@ namespace AbstractionConfig
             return GetContentRoot() + polishedName + "\\";
         }
 
-        private const string TransInputFolder = "In";
-        private const string TransOutputFolder = "Out";
+        public static string GetAbstractionInputRoot(string abstractionName)
+        {
+            return Path.Combine(GetAbstractionContentRoot(abstractionName), AbstractionInputFolder);
+        }
+
+        public static string GetAbstractionOutputFolder(string abstractionName)
+        {
+            return Path.Combine(GetAbstractionContentRoot(abstractionName), AbstractionOutputFolder);
+        }
+
+        private const string AbstractionInputFolder = "In";
+        private const string AbstractionOutputFolder = "Out";
         private const string ContentFolderPrefixFilter = "Content_v";
 
         public static void CopyFromSourceToTrans(string sourceAbstractionName, string transName)
         {
-            string sourceContentInputRoot = GetAbstractionContentRoot(sourceAbstractionName);
+            string sourceContentInputRoot = GetAbstractionInputRoot(sourceAbstractionName);
             string transContentInputRoot = GetTransContentInputRoot(transName);
             //string[] directoryNames = Directory.GetDirectories(sourceContentInputRoot, ContentFolderPrefixFilter + "*");
             //DirectoryInfo[] directories = directoryNames.Select(dirName => new DirectoryInfo(dirName)).ToArray();
@@ -40,7 +51,7 @@ namespace AbstractionConfig
 
         private static string GetTransContentInputRoot(string transName)
         {
-            return GetAbstractionContentRoot(transName) + TransInputFolder + "\\";
+            return GetAbstractionInputRoot(transName);
         }
 
         public static void CleanupTransformationDirectories(string transName)
@@ -81,21 +92,28 @@ namespace AbstractionConfig
                 CopyDirectoryTree(dir, target.CreateSubdirectory(targetDirName));
             }
             foreach (FileInfo file in source.GetFiles())
-                file.CopyTo(Path.Combine(target.FullName, file.Name));
+                file.CopyTo(Path.Combine(target.FullName, file.Name), true);
         } 
 
 
         public static void CopyFromTransToTarget(string transName, string targetAbstractionName)
         {
             string transContentOutputRoot = GetTransContentOutputRoot(transName);
-            string targetContentRootInputRoot = GetAbstractionContentRoot(targetAbstractionName);
+            string targetContentRootInputRoot = GetAbstractionInputRoot(targetAbstractionName);
             CopyDirectoryTree(new DirectoryInfo(transContentOutputRoot),
                               new DirectoryInfo(targetContentRootInputRoot), transName, true);
         }
 
         private static string GetTransContentOutputRoot(string transName)
         {
-            return GetAbstractionContentRoot(transName) + TransOutputFolder + "\\";
+            return GetAbstractionContentRoot(transName) + AbstractionOutputFolder + "\\";
+        }
+
+        public static string[] GetInputContentFiles(string abstractionName, string filefilter)
+        {
+            string abstractionInputRoot = GetAbstractionInputRoot(abstractionName);
+            string[] fileNames = Directory.GetFiles(abstractionInputRoot, filefilter, SearchOption.AllDirectories);
+            return fileNames;
         }
     }
 }

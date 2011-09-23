@@ -17,7 +17,7 @@ namespace AbstractionConfig
         public static string GetAbstractionContentRoot(string abstractionName)
         {
             string polishedName = abstractionName.Replace("TRANS", "").Replace("ABS", "");
-            return GetContentRoot() + polishedName + "\\";
+            return Path.Combine(GetContentRoot(), polishedName);
         }
 
         public static string GetAbstractionInputRoot(string abstractionName)
@@ -114,7 +114,7 @@ namespace AbstractionConfig
 
         private static string GetTransContentOutputRoot(string transName)
         {
-            return GetAbstractionContentRoot(transName) + AbstractionOutputFolder + "\\";
+            return Path.Combine(GetAbstractionContentRoot(transName), AbstractionOutputFolder);
         }
 
         public static string[] GetInputContentFiles(string abstractionName, string filefilter)

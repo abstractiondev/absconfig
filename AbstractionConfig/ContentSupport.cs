@@ -42,6 +42,8 @@ namespace AbstractionConfig
             //DirectoryInfo[] directories = directoryNames.Select(dirName => new DirectoryInfo(dirName)).ToArray();
             DirectoryInfo sourceDir = new DirectoryInfo(sourceContentInputRoot);
             DirectoryInfo targetDir = new DirectoryInfo(transContentInputRoot);
+            if (sourceDir.Exists == false)
+                sourceDir.Create();
             CopyDirectoryTree(sourceDir, targetDir);
             //foreach(var sourceDir in directories)
             //{
@@ -128,6 +130,8 @@ namespace AbstractionConfig
         {
             string inputRoot = GetAbstractionInputRoot(targetAbstractionName);
             DirectoryInfo inputDir = new DirectoryInfo(inputRoot);
+            if(inputDir.Exists == false)
+                inputDir.Create();
             DirectoryInfo[] transformationDirectories = inputDir.GetDirectories(transformationName,
                                                                                 SearchOption.AllDirectories);
             Array.ForEach(transformationDirectories, dir => dir.Delete(true));
